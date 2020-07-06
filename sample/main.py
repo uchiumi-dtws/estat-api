@@ -72,6 +72,6 @@ for table in table_list:
         "annotationGetFlg": "N",      # 注釈情報有無(Y or N)
     }
     url = estatapi_url_parser.getStatsDataURL(params_dict, format="csv")
-    filepath = f"./csv/{stats_code}_{table_id}_{table_name}.csv"
+    filepath = f"./data/{stats_code}_{table_id}_{table_name}.csv"
     download_csv(url, filepath)
 
