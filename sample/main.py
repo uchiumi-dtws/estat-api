@@ -5,46 +5,17 @@ import json
 import requests
 from pprint import pprint
 from estat_api import download_json, EstatRestAPI_URLParser
+from utils import get_json, download_json, download_csv
 
-def get_json(url):
-    try:
-        print("HTTP GET", url)
-        r = requests.get(url)
-        json_dict = r.json()
-        return json_dict
-    except requests.exceptions.RequestException as err:
-        print(err)
-
-
-def download_json(url, filepath):
-    try:
-        print("HTTP GET", url)
-        r = requests.get(url)
-        json_dict = r.json()
-        json_str = json.dumps(json_dict, indent=2, ensure_ascii=False)
-        with open(filepath, "w") as f:
-            f.write(json_str)
-    except requests.exceptions.RequestException as err:
-        print(err)
-
-
-def download_csv(url, filepath):
-    try:
-        print("HTTP GET", url)
-        r = requests.get(url)
-        with open(filepath, 'w') as f:
-            writer = csv.writer(f)
-            for line in r.iter_lines():
-                writer.writerow(line.decode('utf-8').split(','))
-    except requests.exceptions.RequestException as err:
-        print(err)
-
-## Common settings
+# Common settings
 appId = "65a9e884e72959615c2c7c293ebfaeaebffb6030"  # Application ID
 estatapi_url_parser = EstatRestAPI_URLParser() # URL Parser
 
-## 統計情報取得 
-## call API (GET data as JSON) -> save as python objects (dict)
+# ========================
+# 1.統計情報取得 
+#     call API (GET data as JSON) -> save as python objects (dict)
+# ========================
+
 stats_code = "00200521"
 params_dict = {
     "appId": appId,           # Application ID
@@ -58,8 +29,11 @@ params_dict = {
 url = estatapi_url_parser.getStatsListURL(params_dict, format="json")
 statslist_dict = get_json(url)
 
-## 統計データ取得 
-## python object (dict) -> search URL -> call API (GET data as CSV) -> save local file
+# ========================
+# 2.統計データ取得 
+#     python object (dict) -> search URL -> call API (GET data as CSV) -> save local file
+# ========================
+
 table_list= statslist_dict["GET_STATS_LIST"]["DATALIST_INF"]["TABLE_INF"]
 for table in table_list:
     table_id = table["@id"]
